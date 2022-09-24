@@ -125,7 +125,119 @@ function getData() {
       // }
 
       // tableData(document.querySelector('table'));
+
       // graph
+      var c = [];
+      var t = [];
+      var a = [];
+      var r = [];
+      var d = [];
+      var countries = [];
+      var totalCases = [];
+      var activeCases = [];
+      var recoveredCases = [];
+      var deaths = [];
+      for (var i=0 ; i<25 ; i++){
+        c+= response.countries_stat[i].country_name + "|"
+        countries = c.split("|");
+        t+= response.countries_stat[i].cases + "|"
+        totalCases = t.split("|");
+        a+= response.countries_stat[i].active_cases + "|"
+        activeCases = a.split("|");
+        r+= response.countries_stat[i].total_recovered + "|"
+        recoveredCases = r.split("|");
+        d+= response.countries_stat[i].deaths + "|"
+        deaths = d.split("|");
+      }
+      countries.pop();
+      totalCases.pop();
+      activeCases.pop();
+      recoveredCases.pop();
+      deaths.pop();
+
+      length = totalCases.length;
+      var totalCasesN = [];
+      var activeCasesN = [];
+      var recoveredCasesN = [];
+      var deathsN = [];
+      for (var i = 0; i < length; i++){
+        totalCasesN[i] = parseFloat(totalCases[i].replace(/,/g, ""));
+        activeCasesN[i] = parseFloat(activeCases[i].replace(/,/g, ""));
+        recoveredCasesN[i] = parseFloat(recoveredCases[i].replace(/,/g, ""));
+        deathsN[i] = parseFloat(deaths[i].replace(/,/g, ""));
+      }
+
+      console.log(recoveredCasesN);
+      console.log(totalCases);
+      var ctx = document.querySelector("canvas").getContext("2d")
+
+      const myChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+              labels: countries,
+              datasets: [
+                {
+                  label: 'Confirmed',
+                  data: totalCasesN,
+                  backgroundColor: [
+                      '#E14D2A',
+                      '#E14D2A',
+                      '#E14D2A',
+                      '#E14D2A',
+                      '#E14D2A',
+                      '#E14D2A'
+                  ],
+                  borderWidth: 1
+              },
+              {
+                label: 'Active',
+                data: activeCasesN,
+                backgroundColor: [
+                    '#5800FF',
+                    '#5800FF',
+                    '#5800FF',
+                    '#5800FF',
+                    '#5800FF',
+                    '#5800FF'
+                ],
+                borderWidth: 1
+            },
+            {
+              label: 'Recovered',
+              data: recoveredCasesN,
+              backgroundColor: [
+                  '#446A46',
+                  '#446A46',
+                  '#446A46',
+                  '#446A46',
+                  '#446A46',
+                  '#446A46'
+              ],
+              borderWidth: 1
+          },
+          {
+            label: 'Deaths',
+            data: deathsN,
+            backgroundColor: [
+                '#73777B',
+                '#73777B',
+                '#73777B',
+                '#73777B',
+                '#73777B',
+                '#73777B'
+            ],
+            borderWidth: 1
+          },
+            ]
+          },
+          options: {
+              scales: {
+                  y: {
+                      beginAtZero: true
+                  }
+              }
+          }
+      });
     })
     .catch(err => console.error(err));
 }
@@ -135,8 +247,9 @@ function myFunction(){
   var toggle = document.querySelectorAll("input")[0];
 
   var table = document.querySelectorAll("table");
-
+  var canvas = document.querySelector('canvas')
   if (toggle.checked == true){
+    canvas.className = "dark"
     for (var i = 0;i<3;i++){
       table[i].className = "table table-hover container table-dark"
     }
@@ -144,6 +257,7 @@ function myFunction(){
   else{
     for (var i = 0;i<3;i++){
       table[i].className = "table table-hover container"
+      canvas.className = ""
     }
   }
   }
